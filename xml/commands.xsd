@@ -1,0 +1,46 @@
+﻿<?xml version = "1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <xsd:simpleType name="deviceAddress">
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0" />
+      <xsd:maxInclusive value="255" />
+    </xsd:restriction>  
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="actionType">
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0" />
+      <xsd:maxInclusive value="255" />
+    </xsd:restriction>  
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="msgParams">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value = "([0-9]{1,3} )*[0-9]{0,3}" />
+    </xsd:restriction>  
+  </xsd:simpleType>
+  
+  <xsd:complexType name="entireMessage">
+    <xsd:sequence>
+      <xsd:element name="address" type = "deviceAddress" />
+      <xsd:element name="action" type = "actionType" />
+      <xsd:element name="params" type = "msgParams" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name = "entireCommand">
+    <xsd:sequence>
+      <xsd:element name="commandName" type="xsd:string" />
+      <xsd:element name="message" type = "entireMessage" />
+    </xsd:sequence>
+  </xsd:complexType>
+    
+  <xsd:complexType name="allCommands">
+    <xsd:sequence>
+      <xsd:element name="command" type="entireCommand" minOccurs = "0" maxOccurs = "unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+    
+  <xsd:element name="commands" type="allCommands" />
+</xsd:schema>

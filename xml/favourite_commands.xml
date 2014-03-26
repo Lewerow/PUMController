@@ -1,0 +1,21 @@
+﻿<?xml version = "1.0" encoding="UTF-8"?>
+<commands xmlns="commands.xsd">
+  <command>
+    <commandName>Adres</commandName>
+    <message>
+      <address>200</address>
+      <action>200</action>
+      <params>100 10 10 50 250 10</params>
+    </message>
+  </command>
+  
+  <command>
+    <commandName>Prędkość</commandName>
+    <message>
+      <address>50</address>
+      <action>20</action>
+      <params>110 50 20 120</params>
+    </message>
+  </command>
+
+</commands>

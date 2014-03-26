@@ -1,0 +1,77 @@
+﻿Początek wiadomości -> 0xFF
+Koniec wiadomości -> 0x0A (Line Feed) - \n
+
+Dostępna pula adresów -> 0x10 - 0xEF (w sumie 224 adresy) - wstępnie możemy przyjąć fizyczny adres hosta 0x00 i "do wszystkich" - 0x01
+
+Dostępna pula komend -> 0x10 - 0xEF (w sumie 224 komendy)
+Komendy 0x00 - 0x09 i 0x0B - 0x0F to komendy które powinny być wszędzie interpretowane jednakowo
+Komendy 0xF0-0xFE to odpowiedzi urządzeń
+
+Struktura wiadomości:
+0xFF [adres] [komenda] [polecenia-ascii] 0x0A
+
+PRZYKŁADOWE komendy hosta:
+
+1. 0x30 - uruchom urządzenie
+przykład:
+0xFF 0xXX 0x30 0x0A
+uruchamia urządzenie obsługiwane przez mikrokontroler o adresie 0xXX
+
+2. 0x31 - zmiana adresu
+przykład:
+0xFF 0xXX 0x31 YY 0x0A
+zmienia adres urządzenia 0xXX na 0xYY (tylko na czas aktualnej sesji)
+uwagi:
+nie powinno działać przy adresie 0x01 !
+
+3. 0x32 - raportuj stan
+przykład:
+0xFF 0xXX 0x32 0x0A - pełny raport
+0xFF 0xXX 0x32 F 0x0A - raport o parametrach opisanych przez F - (1111)
+żąda raportu o stanie od urządzenia o adresie 0xXX
+uwagi:
+najlepiej byłoby parametry opisywać kolejnymi bitami - np. dla silnika
+0001 (0x1) - prędkość
+0010 (0x2) - moment
+0100 (0x4) - prąd
+1000 (0x8) - czy uruchomiony
+zestaw kilku parametrów jako suma poszczególnych
+
+4. 0x39 - wyłącz urządzenie
+przykład:
+0xFF 0xXX 0x0E 0x0A
+wyłącza urządzenie obsługiwane przez mikrokonroler o adresie 0xXX
+
+5. 0x3A - zakończ pracę
+powinno być wykorzystywane tylko w formie:
+0xFF 0x31 0x3A 0x0A
+kończy pracę wszystkich mikrokontrolerów i urządzeń (bez możliwości włączenia? - chyba że jest
+opcja uruchamiania przez RSa, to ta komenda jest niepotrzebna)
+
+Odpowiedzi urządzeń:
+Urządzenie musi w odpowiedzi podać swój adres, żeby uniknąć kolizji
+
+1. 0x41 - raport stanu rzeczywistego
+przykład:
+0xFF 0x30 0x41 0xXX 0x07 AEDE07 0x0A - przykładowa odpowiedź silnika o adresie 0xXX
+zakładamy stany ośmiobitowe - do dyskusji
+0x07 - prąd + moment + prędkość
+prąd - AE
+moment - DE
+prędkość - 07
+dekodowanie od najwyższego bitu
+
+2. 0x42 - raport stanu oczekiwanego (może być wykorzystywany jako potwierdzenie odbioru informacji)
+przykład:
+0xFF 0x30 0xF0 0xXX 0x0F 01AEDE07 0x0A - przykładowa odpowiedź silnika o adresie 0xXX
+zakładamy stany ośmiobitowe - do dyskusji, ale raczej będzie to najwygodniejsze
+0x0F - czy uruchomiony + prąd + moment + prędkość
+czy uruchomiony - 01
+prąd - AE
+moment - DE
+prędkość - 07
+dekodowanie od najwyższego bitu
+
+
+Zakresy adresów i komend pozostają do ustalenia, ale proponuję od 33 do 126, bo są to znaki drukowalne
+(będzie je łatwo wpisywać w konsolę, a dla aplikacji nie ma znaczenia) - jak braknie, to się będziemy martwić

@@ -1,0 +1,49 @@
+﻿<?xml version = "1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <xsd:simpleType name="deviceAddress">
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0" />
+      <xsd:maxInclusive value="255" />
+    </xsd:restriction>  
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="deviceName">
+    <xsd:restriction base="xsd:string" />
+  </xsd:simpleType>
+   
+  <xsd:complexType name="entireDevice">
+    <xsd:sequence>
+      <xsd:element name="name" type="deviceName" />
+      <xsd:element name="address" type="deviceAddress" />
+      <xsd:element name="type" type="xsd:string" />
+      <xsd:element name="class" type="xsd:string" />
+      <xsd:element name="params" type="deviceParameters" />
+    </xsd:sequence>
+  </xsd:complexType>  
+    
+  <xsd:complexType name="deviceParameters">
+    <xsd:sequence>
+      <xsd:element name="param" type="deviceParameter" minOccurs = "0" maxOccurs = "unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="deviceParameter">
+    <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" />
+      <xsd:element name="unit" type="xsd:string" />
+      <xsd:element name="max" type="xsd:decimal" />
+      <xsd:element name="min" type="xsd:decimal" />
+      <xsd:element name="step" type="xsd:decimal" />
+      <xsd:element name="value" type="xsd:decimal" />
+    </xsd:sequence>
+  </xsd:complexType>
+    
+  <xsd:complexType name="allDevices">
+    <xsd:sequence>
+      <xsd:element name="device" type="entireDevice" minOccurs = "0" maxOccurs = "unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+    
+  <xsd:element name="devices" type="allDevices" />
+</xsd:schema>
